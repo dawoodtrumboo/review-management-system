@@ -25,15 +25,6 @@ const center = {
 }
 
 const Map: React.FC = () => {
-  const mapOptions = {
-    disableDefaultUI: true, // Disables default map UI controls
-    zoomControl: false, // Hides the zoom control
-    mapTypeControl: false, // Hides the map type control
-    scaleControl: false, // Hides the scale control
-    streetViewControl: false, // Hides the Street View control
-    rotateControl: false, // Hides the rotate control
-    fullscreenControl: false, // Hides the fullscreen control
-  }
 
   return (
     <LoadScript
