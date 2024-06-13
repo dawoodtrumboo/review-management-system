@@ -15,7 +15,7 @@
     "init": "pnpm run docker:init ; pnpm env:init ; pnpm run database:migration:run",
     "env:init": "sh ./scripts/env.sh",
     "dev": "nest start --debug --watch",
-    "build": "tsc -p tsconfig.prod.json nest build",
+    "build": "nest build",
     "start:prod": "node dist/main",
     "start": " nest start",
     "check": "tsc",
