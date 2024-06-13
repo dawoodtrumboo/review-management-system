@@ -16,7 +16,8 @@
     "env:init": "sh ./scripts/env.sh",
     "dev": "nest start --debug --watch",
     "build": "nest build",
-    "start": "start:prod: node dist/main",
+    "start:prod": "node dist/main",
+    "start": " nest start",
     "check": "tsc",
     "check:dependencies": "ts-node -r tsconfig-paths/register ./scripts/check-dependencies.ts",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -45,6 +46,8 @@
     "@nestjs/serve-static": "^4.0.0",
     "@nestjs/typeorm": "^10.0.1",
     "@nestjs/websockets": "^10.3.0",
+    "@types/jest": "^29.5.2",
+    "@types/express": "^4.17.17",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "class-transformer": "^0.5.1",
@@ -65,7 +68,8 @@
     "stripe": "^15.6.0",
     "typeorm": "^0.3.17",
     "uuid": "^9.0.1",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "jest": "^29.5.0"
   },
   "devDependencies": {
     "@nestjs/schematics": "^10.0.0",
