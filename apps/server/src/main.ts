@@ -21,7 +21,7 @@ async function bootstrap() {
   const port = configurationService.getPort()
 
   app.use(RequestHelper.handleRawBody)
-
+  // Changes
   app.enableCors(corsService.getOptions())
 
   app.use(CookieParser())
