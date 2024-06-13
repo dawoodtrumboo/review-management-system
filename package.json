@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "init": "pnpm install && pnpm run --filter server init ",
-    "dev": "pnpm run --parallel dev",
-    "build": "npm install && npx @nestjs/cli build pnpm run --filter server build ",
+     "dev": "pnpm run --parallel dev",
+    "build": "pnpm run --filter server build && pnpm run --filter web build",
     "start": "pnpm run --parallel start",
     "ensure": "pnpm -v || npm install -g pnpm && pnpm install"
   },
