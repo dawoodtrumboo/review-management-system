@@ -16,7 +16,7 @@
     "env:init": "sh ./scripts/env.sh",
     "dev": "nest start --debug --watch",
     "build": "nest build",
-    "start": "node dist/main",
+    "start": "start:prod: node dist/main",
     "check": "tsc",
     "check:dependencies": "ts-node -r tsconfig-paths/register ./scripts/check-dependencies.ts",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -32,6 +32,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.502.0",
     "@aws-sdk/s3-request-presigner": "^3.572.0",
+    "@nestjs/axios": "^3.0.2",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
