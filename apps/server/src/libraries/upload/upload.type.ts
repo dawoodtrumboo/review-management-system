@@ -1,1 +1,1 @@
-export type UploadFileType = Express.Multer.File
+// export type UploadFileType = Express.Multer.File
