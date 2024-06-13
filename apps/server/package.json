@@ -16,7 +16,7 @@
     "env:init": "sh ./scripts/env.sh",
     "dev": "nest start --debug --watch",
     "build": "nest build",
-    "start:prod": "node dist/main",
+    "start:prod": "npm install && npx @nestjs/cli build node dist/main",
     "start": " nest start",
     "check": "tsc",
     "check:dependencies": "ts-node -r tsconfig-paths/register ./scripts/check-dependencies.ts",
