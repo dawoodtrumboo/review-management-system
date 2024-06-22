@@ -47,10 +47,15 @@ export const NavigationLayout: React.FC<Props> = ({ children }) => {
       onClick: () => goTo('/integration'),
     },
 
+    // {
+    //   key: '/reviews',
+    //   label: 'Reviews',
+    //   onClick: () => goTo('/reviews'),
+    // },
     {
-      key: '/reviews',
-      label: 'Reviews',
-      onClick: () => goTo('/reviews'),
+      key: '/business-reviews',
+      label: 'Review',
+      onClick: () => goTo('/business-reviews'),
     },
 
     {
@@ -59,11 +64,11 @@ export const NavigationLayout: React.FC<Props> = ({ children }) => {
       onClick: () => goTo('/settings'),
     },
 
-    {
-      key: '/history',
-      label: 'History',
-      onClick: () => goTo('/history'),
-    },
+    // {
+    //   key: '/history',
+    //   label: 'History',
+    //   onClick: () => goTo('/history'),
+    // },
   ]
 
   let itemsSubNavigation = [
@@ -77,9 +82,13 @@ export const NavigationLayout: React.FC<Props> = ({ children }) => {
       label: 'Integration',
     },
 
+    // {
+    //   key: '/reviews',
+    //   label: 'Reviews',
+    // },
     {
-      key: '/reviews',
-      label: 'Reviews',
+      key: '/business-reviews',
+      label: 'Review',
     },
 
     {
@@ -87,10 +96,10 @@ export const NavigationLayout: React.FC<Props> = ({ children }) => {
       label: 'Settings',
     },
 
-    {
-      key: '/history',
-      label: 'History',
-    },
+    // {
+    //   key: '/history',
+    //   label: 'History',
+    // },
   ]
 
   let itemsMobile = [

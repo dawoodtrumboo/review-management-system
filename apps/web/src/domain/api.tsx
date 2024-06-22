@@ -19,6 +19,7 @@ import { ReplyApi } from './reply/reply.api'
 import { AiPromptApi } from './aiPrompt/aiPrompt.api'
 
 import { HistoryApi } from './history/history.api'
+import { PlaceApi } from './places'
 
 export namespace Api {
   export class Ai extends AiApi {}
@@ -42,4 +43,6 @@ export namespace Api {
   export class AiPrompt extends AiPromptApi {}
 
   export class History extends HistoryApi {}
+
+  export class Place extends PlaceApi {}
 }
