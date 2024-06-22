@@ -43,6 +43,5 @@ export namespace Api {
   export class AiPrompt extends AiPromptApi {}
 
   export class History extends HistoryApi {}
-
   export class Place extends PlaceApi {}
 }

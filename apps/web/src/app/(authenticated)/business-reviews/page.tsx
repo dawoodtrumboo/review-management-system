@@ -28,7 +28,6 @@ import {
   Tooltip,
   Typography,
 } from 'antd'
-import axios from 'axios'
 import dayjs from 'dayjs'
 import { useParams, useRouter } from 'next/navigation'
 import { useSnackbar } from 'notistack'

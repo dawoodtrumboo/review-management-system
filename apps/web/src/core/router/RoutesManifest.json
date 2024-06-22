@@ -1,0 +1,50 @@
+{
+  "routes": [
+    {
+      "path": "/home",
+      "component": "HomePage",
+      "description": "The home page of the application"
+    },
+    {
+      "path": "/login",
+      "component": "LoginPage",
+      "description": "Login page for users to access their accounts"
+    },
+    {
+      "path": "/register",
+      "component": "RegisterPage",
+      "description": "Registration page for new users"
+    },
+    {
+      "path": "/integration",
+      "component": "IntegrationPage",
+      "description": "User dashboard showing user-specific information"
+    },
+    {
+      "path": "/reviews",
+      "component": "ReviewsPage",
+      "description": "User profile page where users can update their information"
+    },
+    {
+      "path": "/settings",
+      "component": "SettingsPage",
+      "description": "Settings page for managing the application"
+    },
+    {
+      "path": "/history",
+      "component": "HistoryPage",
+      "description": "History page for users to change their preferences"
+    },
+    {
+      "path": "/profile",
+      "component": "ProfilePage",
+      "description": "Profile page page for users"
+    },
+    {
+      "path": "/notifications",
+      "component": "NotificationsPage",
+      "description": "Logout page for users to end their session",
+      "permissions": ["user", "admin"]
+    }
+  ]
+}

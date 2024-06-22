@@ -18,7 +18,6 @@ import { HistoryApplicationModule } from './history/application'
 import { AiApplicationModule } from './ai/application/ai.application.module'
 import { BillingApplicationModule } from './billing/application'
 import { NotificationApplicationModule } from './notification/application/notification.application.module'
-import { OpenAiModule } from './openai/application/openai.application.module'
 import { PlaceModule } from './place/application/place.application.module'
 import { PlaceReviewModule } from './placeReview/application/placeReview.application.module'
 import { UploadApplicationModule } from './upload/application/upload.application.module'
@@ -35,7 +34,6 @@ import { UploadApplicationModule } from './upload/application/upload.application
     // Custom Endpoints
     PlaceModule,
     PlaceReviewModule,
-    OpenAiModule,
 
     // Custom Endpoints
     BusinessAccountApplicationModule,
