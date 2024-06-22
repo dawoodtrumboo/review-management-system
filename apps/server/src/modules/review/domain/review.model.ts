@@ -1,4 +1,3 @@
-import { ColumnNumeric } from '@server/core/database'
 import {
   Column,
   CreateDateColumn,
@@ -15,6 +14,7 @@ import { Location } from '../../../modules/location/domain'
 
 import { Reply } from '../../../modules/reply/domain'
 
+import { Place } from '@server/modules/place/domain'
 import { History } from '../../../modules/history/domain'
 
 @Entity()
@@ -52,4 +52,19 @@ export class Review {
 
   @DeleteDateColumn()
   dateDeleted: string
+
+  // Temp relations
+
+  @Column({ nullable: true })
+  author_name?: string
+
+  @Column({ nullable: true })
+  rating?: number
+
+  @Column({ nullable: true })
+  place_id: string
+
+  @ManyToOne(() => Place, places => places.reviews)
+  @JoinColumn({ name: 'place_id' })
+  places?: Place
 }

@@ -1,4 +1,3 @@
-import { ColumnNumeric } from '@server/core/database'
 import {
   Column,
   CreateDateColumn,
@@ -6,7 +5,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'

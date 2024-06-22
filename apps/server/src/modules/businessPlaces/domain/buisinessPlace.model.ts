@@ -1,21 +1,19 @@
+import { Place } from '@server/modules/place/domain'
+import { User } from '@server/modules/user/domain'
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 
-import { BusinessAccount } from '../../../modules/businessAccount/domain'
-
-import { Review } from '../../../modules/review/domain'
-
 @Entity()
-export class Location {
+export class BusinessPlace {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -26,14 +24,14 @@ export class Location {
   address: string
 
   @Column({})
-  businessAccountId: string
+  userId: string
 
-  @ManyToOne(() => BusinessAccount, parent => parent.locations)
-  @JoinColumn({ name: 'businessAccountId' })
-  businessAccount?: BusinessAccount
+  @OneToOne(() => User, user => user.business)
+  @JoinColumn({ name: 'userId' })
+  user?: User
 
-  @OneToMany(() => Review, child => child.location)
-  reviews?: Review[]
+  @OneToMany(() => Place, place => place.business_place)
+  places?: Place[]
 
   @CreateDateColumn()
   dateCreated: string
