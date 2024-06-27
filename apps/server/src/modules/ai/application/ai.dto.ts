@@ -4,6 +4,11 @@ export class AiChatBody {
   @IsNotEmpty()
   @IsString()
   prompt: string
+
+  // changed by dawood
+  @IsNotEmpty()
+  @IsString()
+  userId: string
 }
 export class AiGenerateImageBody {
   @IsNotEmpty()

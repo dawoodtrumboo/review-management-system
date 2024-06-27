@@ -4,8 +4,8 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
@@ -31,7 +31,7 @@ export class Reply {
   @Column({})
   reviewId: string
 
-  @ManyToOne(() => Review, parent => parent.replys)
+  @OneToOne(() => Review, parent => parent.reply)
   @JoinColumn({ name: 'reviewId' })
   review?: Review
 

@@ -6,6 +6,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
@@ -28,18 +29,24 @@ export class Review {
   @Column({})
   reviewDate: string
 
-  @Column({})
-  status: string
+  @Column({ nullable: true })
+  status?: string
 
-  @Column({})
+  @Column({ nullable: true })
   locationId: string
 
   @ManyToOne(() => Location, parent => parent.reviews)
   @JoinColumn({ name: 'locationId' })
   location?: Location
 
-  @OneToMany(() => Reply, child => child.review)
-  replys?: Reply[]
+  // @OneToMany(() => Reply, child => child.review)
+  // replys?: Reply[]
+  @Column({ nullable: true })
+  replyId: string
+
+  @OneToOne(() => Reply, child => child.review)
+  @JoinColumn({ name: 'replyId' })
+  reply?: Reply
 
   @OneToMany(() => History, child => child.review)
   historys?: History[]
@@ -62,9 +69,12 @@ export class Review {
   rating?: number
 
   @Column({ nullable: true })
+  time?: number
+
+  @Column({ nullable: true })
   place_id: string
 
   @ManyToOne(() => Place, places => places.reviews)
-  @JoinColumn({ name: 'place_id' })
+  @JoinColumn({ name: 'place_id', referencedColumnName: 'place_id' })
   places?: Place
 }

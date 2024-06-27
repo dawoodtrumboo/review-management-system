@@ -43,6 +43,21 @@ export class ReviewApi {
     )
   }
 
+  static findManyByPlaceId(
+    place_id: string,
+    queryOptions?: ApiHelper.QueryOptions<any>,
+  ): Promise<{
+    name: string
+    rating: number
+    user_ratings_total: number
+    reviews: Review[]
+  }> {
+    const buildOptions = ApiHelper.buildQueryOptions(queryOptions)
+    return HttpService.api.get(
+      `/v1/reviews/getByPlaceId/${place_id}${buildOptions}`,
+    )
+  }
+
   static createOneByLocationId(
     locationId: string,
     values: Partial<Review>,

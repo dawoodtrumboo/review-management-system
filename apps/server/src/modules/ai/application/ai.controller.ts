@@ -23,14 +23,14 @@ export class AiController {
 
   @Post('/chat')
   async chat(@Body() body: AiChatBody) {
-    const { prompt } = body
+    const { prompt, userId } = body
 
     if (!this.openaiService.isActive()) {
       this.exception.openaiNotActivated()
     }
 
     try {
-      const answer = await this.openaiService.chat(prompt)
+      const answer = await this.openaiService.chat(prompt, userId)
 
       return { answer }
     } catch (error) {

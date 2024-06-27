@@ -1,5 +1,5 @@
-import { BusinessPlace } from '@server/modules/businessPlaces/domain'
 import { Review } from '@server/modules/review/domain'
+import { User } from '@server/modules/user/domain'
 import {
   Column,
   CreateDateColumn,
@@ -16,6 +16,9 @@ export class Place {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
+  @Column({ nullable: true, unique: true })
+  place_id?: string
+
   @Column({})
   name: string
 
@@ -23,11 +26,11 @@ export class Place {
   address: string
 
   @Column({})
-  business_place_id: string
+  userId: string
 
-  @ManyToOne(() => BusinessPlace, business => business.places)
-  @JoinColumn({ name: 'business_place_id' })
-  business_place?: BusinessPlace
+  @ManyToOne(() => User, user => user.place)
+  @JoinColumn({ name: 'userId' })
+  user?: User
 
   @OneToMany(() => Review, reviews => reviews.places)
   reviews?: Review[]

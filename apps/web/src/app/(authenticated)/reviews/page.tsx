@@ -1,27 +1,27 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { CheckOutlined, EditOutlined, SendOutlined } from '@ant-design/icons'
+import { Api, Model } from '@web/domain'
+import { PageLayout } from '@web/layouts/Page.layout'
+import { useAuthentication } from '@web/modules/authentication'
 import {
-  Typography,
-  Select,
-  DatePicker,
   Button,
-  List,
-  Input,
-  Row,
   Col,
+  DatePicker,
+  Input,
+  List,
+  Row,
+  Select,
   Spin,
+  Typography,
 } from 'antd'
-import { EditOutlined, SendOutlined, CheckOutlined } from '@ant-design/icons'
+import dayjs from 'dayjs'
+import { useParams, useRouter } from 'next/navigation'
+import { useSnackbar } from 'notistack'
+import { useEffect, useState } from 'react'
 const { Title, Text, Paragraph } = Typography
 const { RangePicker } = DatePicker
 const { Option } = Select
-import { useAuthentication } from '@web/modules/authentication'
-import dayjs from 'dayjs'
-import { useSnackbar } from 'notistack'
-import { useRouter, useParams } from 'next/navigation'
-import { Api, Model } from '@web/domain'
-import { PageLayout } from '@web/layouts/Page.layout'
 
 export default function ReviewsPage() {
   const router = useRouter()
@@ -34,6 +34,7 @@ export default function ReviewsPage() {
     Model.BusinessAccount[]
   >([])
   const [locations, setLocations] = useState<Model.Location[]>([])
+  const [places, setPlaces] = useState<Model.Place[]>([])
   const [selectedBusinessAccount, setSelectedBusinessAccount] = useState<
     string | undefined
   >(undefined)
@@ -99,7 +100,7 @@ export default function ReviewsPage() {
   const generateAiReply = async (reviewId: string, reviewText: string) => {
     try {
       const prompt = `Generate a reply for the following review: "${reviewText}"`
-      const reply = await Api.Ai.chat(prompt)
+      const reply = await Api.Ai.chat(prompt, userId)
       setAiReplies(prev => ({ ...prev, [reviewId]: reply }))
       enqueueSnackbar('AI reply generated', { variant: 'success' })
     } catch {

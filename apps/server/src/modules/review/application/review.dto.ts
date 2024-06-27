@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator'
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class ReviewCreateDto {
   @IsString()
@@ -16,8 +10,7 @@ export class ReviewCreateDto {
   reviewDate: string
 
   @IsString()
-  @IsNotEmpty()
-  status: string
+  status?: string
 
   @IsString()
   @IsOptional()
@@ -34,6 +27,15 @@ export class ReviewCreateDto {
   @IsString()
   @IsOptional()
   dateUpdated?: string
+
+  @IsString()
+  place_id: string
+
+  @IsNumber()
+  rating: number
+
+  @IsString()
+  author_name: string
 }
 
 export class ReviewUpdateDto {

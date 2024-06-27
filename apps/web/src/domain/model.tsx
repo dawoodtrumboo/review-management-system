@@ -21,6 +21,7 @@ import { AiPrompt as AiPromptModel } from './aiPrompt/aiPrompt.model'
 
 import { History as HistoryModel } from './history/history.model'
 
+import { Place as PlaceModel } from './places'
 export namespace Model {
   export class AuthorizationRole extends AuthorizationRoleModel {}
   export class BillingProduct extends BillingProductModel {}
@@ -34,6 +35,8 @@ export namespace Model {
   export class BusinessAccount extends BusinessAccountModel {}
 
   export class Location extends LocationModel {}
+
+  export class Place extends PlaceModel {}
 
   export class Review extends ReviewModel {}
 

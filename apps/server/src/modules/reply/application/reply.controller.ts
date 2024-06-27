@@ -11,8 +11,9 @@ import {
   Req,
 } from '@nestjs/common'
 import { EventService } from '@server/libraries/event'
-import { Reply, ReplyDomainFacade } from '@server/modules/reply/domain'
 import { AuthenticationDomainFacade } from '@server/modules/authentication/domain'
+import { Reply, ReplyDomainFacade } from '@server/modules/reply/domain'
+import { ReviewDomainFacade } from '@server/modules/review/domain'
 import { RequestHelper } from '../../../helpers/request'
 import { ReplyApplicationEvent } from './reply.application.event'
 import { ReplyCreateDto, ReplyUpdateDto } from './reply.dto'
@@ -23,6 +24,7 @@ export class ReplyController {
     private eventService: EventService,
     private replyDomainFacade: ReplyDomainFacade,
     private authenticationDomainFacade: AuthenticationDomainFacade,
+    private reviewDomainFacade: ReviewDomainFacade,
   ) {}
 
   @Get('/')

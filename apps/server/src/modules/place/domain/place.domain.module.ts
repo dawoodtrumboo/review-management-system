@@ -9,4 +9,4 @@ import { Place } from './place.model'
   providers: [PlaceDomainFacade, PlaceDomainFacade],
   exports: [PlaceDomainFacade],
 })
-export class ReviewDomainModule {}
+export class PlaceDomainModule {}

@@ -69,6 +69,31 @@ export class PlaceDomainFacade {
     return item
   }
 
+  async findManyByUserId(
+    userId: string,
+    queryOptions: RequestHelper.QueryOptions<Place> = {},
+  ): Promise<Place[]> {
+    if (!userId) {
+      this.databaseHelper.invalidQueryWhere('userId')
+    }
+
+    const queryOptionsEnsured = {
+      includes: queryOptions.includes,
+      orders: queryOptions.orders,
+      filters: {
+        ...queryOptions.filters,
+        userId: userId,
+      },
+    }
+
+    const query = this.databaseHelper.applyQueryOptions(
+      this.repository,
+      queryOptionsEnsured,
+    )
+
+    return query.getMany()
+  }
+
   async findManyByLocation(
     item: Location,
     queryOptions: RequestHelper.QueryOptions<Place> = {},

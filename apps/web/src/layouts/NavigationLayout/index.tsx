@@ -42,9 +42,9 @@ export const NavigationLayout: React.FC<Props> = ({ children }) => {
     },
 
     {
-      key: '/integration',
+      key: '/integrationVersionOne',
       label: 'Integration',
-      onClick: () => goTo('/integration'),
+      onClick: () => goTo('/integrationVersionOne'),
     },
 
     // {
@@ -78,7 +78,7 @@ export const NavigationLayout: React.FC<Props> = ({ children }) => {
     },
 
     {
-      key: '/integration',
+      key: '/integrationVersionOne',
       label: 'Integration',
     },
 

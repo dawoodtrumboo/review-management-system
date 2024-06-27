@@ -93,6 +93,7 @@ INSERT INTO "history" ("id", "exportStatus", "reviewId", "replyId") VALUES ('0b8
 INSERT INTO "history" ("id", "exportStatus", "reviewId", "replyId") VALUES ('8a5eb9a4-9034-4aea-81aa-0de9783c7385', 'In Progress', '5ebaa0cf-c4f2-4355-8b30-f41658586870', '9d5e1aa2-9c05-4f50-89d8-532c1063c688');
 INSERT INTO "history" ("id", "exportStatus", "reviewId", "replyId") VALUES ('1357b1fb-182b-4aff-9c82-8af8c92f707e', 'In Progress', '6bb4b829-84a6-43f3-afb3-e4444f2708c4', '16a5726f-3baa-4118-b7ad-e7a09c714fb0');
 INSERT INTO "history" ("id", "exportStatus", "reviewId", "replyId") VALUES ('3f4c5501-0347-4563-ac60-debde68be888', 'Pending', '394b56ea-722d-4e41-b435-f71ed28b247e', '78aeb5b1-0df4-4838-860e-0aeb84f44ab4');
+ALTER TABLE review ALTER COLUMN place_id TYPE VARCHAR USING place_id::VARCHAR;
     `,
       )
     } catch (error) {

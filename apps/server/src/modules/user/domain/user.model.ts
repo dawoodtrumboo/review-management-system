@@ -13,7 +13,7 @@ import { Notification } from '../../../modules/notification/domain'
 
 import { BusinessAccount } from '../../../modules/businessAccount/domain'
 
-import { BusinessPlace } from '@server/modules/businessPlaces/domain'
+import { Place } from '@server/modules/place/domain'
 import { AiPrompt } from '../../../modules/aiPrompt/domain'
 
 export enum UserStatus {
@@ -64,6 +64,6 @@ export class User {
 
   // Temp relations
 
-  @OneToOne(() => BusinessPlace, business => business.user)
-  business?: BusinessPlace
+  @OneToOne(() => Place, place => place.user)
+  place?: Place
 }

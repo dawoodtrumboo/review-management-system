@@ -93,4 +93,17 @@ export class AiPromptDomainFacade {
 
     return query.getMany()
   }
+
+  async findMostRecentPromptByUser(
+    userId: string,
+  ): Promise<AiPrompt | undefined> {
+    const queryOptions: RequestHelper.QueryOptions<AiPrompt> = {
+      filters: { userId },
+      orders: { dateCreated: 'DESC' },
+      pagination: { countItems: 1 },
+    }
+
+    const prompts = await this.findMany(queryOptions)
+    return prompts.length ? prompts[0] : undefined
+  }
 }

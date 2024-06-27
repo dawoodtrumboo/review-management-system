@@ -54,8 +54,11 @@ export class Openai {
     }
   }
 
-  async chat(prompt: string): Promise<string> {
-    const messages = this.buildMessages(prompt)
+  async chat(message: {
+    userPrompt: string
+    systemPrompt: string
+  }): Promise<string> {
+    const messages = this.buildMessages(message)
 
     const response = await this.api.chat.completions.create({
       model: OpenaiModel.DEFAULT,
@@ -99,11 +102,18 @@ export class Openai {
     return buffer
   }
 
-  private buildMessages(content: string): ChatCompletionMessageParam[] {
+  private buildMessages(message: {
+    userPrompt: string
+    systemPrompt: string
+  }): ChatCompletionMessageParam[] {
     return [
       {
+        role: 'system',
+        content: message.systemPrompt,
+      },
+      {
         role: 'user',
-        content,
+        content: message.userPrompt,
       },
     ]
   }
