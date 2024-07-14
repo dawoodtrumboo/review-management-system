@@ -205,33 +205,6 @@ export default function TestPage() {
     }
   }
 
-  const saveReview = async (review: Model.Review) => {
-    let returnReview
-    Api.Review.createOne(review)
-      .then(review => {
-        setReviews(prevReviews => {
-          const updatedReviews = { ...prevReviews }
-          updatedReviews.reviews = updatedReviews.reviews.map(item =>
-            review.author_name === review.author_name
-              ? { ...item, id: review.id }
-              : item,
-          )
-          return updatedReviews
-        })
-      })
-      .catch(error =>
-        enqueueSnackbar('Error while saving reviews', { variant: 'error' }),
-      )
-      .finally(() => (returnReview = review))
-    return returnReview
-  }
-
-  const createReply = async (review: Model.Review, reply: Model.Reply) => {
-    Api.Reply.createOneByReviewId(review.id, reply).then(reply => {
-      setAiReplies(prev => ({ ...prev, [review.author_name]: reply.replyText }))
-    })
-  }
-
   const saveReply = async (review: Model.Review, replyText: string) => {
     setLoading(true)
     if (!review.id) {
@@ -505,7 +478,10 @@ export default function TestPage() {
                               type="primary"
                               icon={<SendOutlined />}
                               onClick={() =>
-                                generateAiReply(review.author_name, review.text)
+                                generateAiReply(
+                                  review.author_name,
+                                  review.reviewText,
+                                )
                               }
                               disabled={
                                 editingReply[review.id] ||
