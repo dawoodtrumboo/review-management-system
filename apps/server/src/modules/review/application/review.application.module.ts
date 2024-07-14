@@ -5,13 +5,14 @@ import { ReviewController } from './review.controller'
 
 import { LocationDomainModule } from '../../../modules/location/domain'
 
+import { GoogleModule } from '@server/libraries/google'
 import { ReviewByLocationController } from './reviewByLocation.controller'
 
 @Module({
   imports: [
     AuthenticationDomainModule,
     ReviewDomainModule,
-
+    GoogleModule,
     LocationDomainModule,
   ],
   controllers: [ReviewController, ReviewByLocationController],

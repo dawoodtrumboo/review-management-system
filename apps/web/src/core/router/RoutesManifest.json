@@ -21,6 +21,11 @@
       "description": "User dashboard showing user-specific information"
     },
     {
+      "path": "/integrationVersionOne",
+      "component": "IntegrationPageVersionOne",
+      "description": "User dashboard showing user-specific information"
+    },
+    {
       "path": "/reviews",
       "component": "ReviewsPage",
       "description": "User profile page where users can update their information"

@@ -1,11 +1,9 @@
 import { Location } from '../location'
 
-import { Reply } from '../reply'
-
 import { History } from '../history'
 
 export class Review {
-  id: string
+  id?: string
 
   reviewText: string
 
@@ -23,7 +21,18 @@ export class Review {
 
   dateUpdated: string
 
-  replys?: Reply[]
+  replyId: string
 
   historys?: History[]
+
+  // temp
+  author_name: string
+
+  time: number
+
+  text: string
+
+  place_id: string
+
+  rating: number
 }

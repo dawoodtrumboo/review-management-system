@@ -3,35 +3,35 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { DatabaseHelper } from '../../../core/database'
 import { RequestHelper } from '../../../helpers/request'
-import { AiPrompt } from './aiPrompt.model'
+import { Place } from './place.model'
 
-import { User } from '../../user/domain'
+import { Location } from '../../location/domain'
 
 @Injectable()
-export class AiPromptDomainFacade {
+export class PlaceDomainFacade {
   constructor(
-    @InjectRepository(AiPrompt)
-    private repository: Repository<AiPrompt>,
+    @InjectRepository(Place)
+    private repository: Repository<Place>,
     private databaseHelper: DatabaseHelper,
   ) {}
 
-  async create(values: Partial<AiPrompt>): Promise<AiPrompt> {
+  async create(values: Partial<Place>): Promise<Place> {
     return this.repository.save(values)
   }
 
-  async update(item: AiPrompt, values: Partial<AiPrompt>): Promise<AiPrompt> {
+  async update(item: Place, values: Partial<Place>): Promise<Place> {
     const itemUpdated = { ...item, ...values }
 
     return this.repository.save(itemUpdated)
   }
 
-  async delete(item: AiPrompt): Promise<void> {
+  async delete(item: Place): Promise<void> {
     await this.repository.softDelete(item.id)
   }
 
   async findMany(
-    queryOptions: RequestHelper.QueryOptions<AiPrompt> = {},
-  ): Promise<AiPrompt[]> {
+    queryOptions: RequestHelper.QueryOptions<Place> = {},
+  ): Promise<Place[]> {
     const query = this.databaseHelper.applyQueryOptions(
       this.repository,
       queryOptions,
@@ -42,8 +42,8 @@ export class AiPromptDomainFacade {
 
   async findOneByIdOrFail(
     id: string,
-    queryOptions: RequestHelper.QueryOptions<AiPrompt> = {},
-  ): Promise<AiPrompt> {
+    queryOptions: RequestHelper.QueryOptions<Place> = {},
+  ): Promise<Place> {
     if (!id) {
       this.databaseHelper.invalidQueryWhere('id')
     }
@@ -69,12 +69,12 @@ export class AiPromptDomainFacade {
     return item
   }
 
-  async findManyByUser(
-    item: User,
-    queryOptions: RequestHelper.QueryOptions<AiPrompt> = {},
-  ): Promise<AiPrompt[]> {
-    if (!item) {
-      this.databaseHelper.invalidQueryWhere('user')
+  async findManyByUserId(
+    userId: string,
+    queryOptions: RequestHelper.QueryOptions<Place> = {},
+  ): Promise<Place[]> {
+    if (!userId) {
+      this.databaseHelper.invalidQueryWhere('userId')
     }
 
     const queryOptionsEnsured = {
@@ -82,7 +82,7 @@ export class AiPromptDomainFacade {
       orders: queryOptions.orders,
       filters: {
         ...queryOptions.filters,
-        userId: item.id,
+        userId: userId,
       },
     }
 
@@ -94,16 +94,28 @@ export class AiPromptDomainFacade {
     return query.getMany()
   }
 
-  async findMostRecentPromptByUser(
-    userId: string,
-  ): Promise<AiPrompt | undefined> {
-    const queryOptions: RequestHelper.QueryOptions<AiPrompt> = {
-      filters: { userId },
-      orders: { dateCreated: 'DESC' },
-      pagination: { countItems: 1 },
+  async findManyByLocation(
+    item: Location,
+    queryOptions: RequestHelper.QueryOptions<Place> = {},
+  ): Promise<Place[]> {
+    if (!item) {
+      this.databaseHelper.invalidQueryWhere('location')
     }
 
-    const prompts = await this.findMany(queryOptions)
-    return prompts.length ? prompts[0] : undefined
+    const queryOptionsEnsured = {
+      includes: queryOptions.includes,
+      orders: queryOptions.orders,
+      filters: {
+        ...queryOptions.filters,
+        locationId: item.id,
+      },
+    }
+
+    const query = this.databaseHelper.applyQueryOptions(
+      this.repository,
+      queryOptionsEnsured,
+    )
+
+    return query.getMany()
   }
 }

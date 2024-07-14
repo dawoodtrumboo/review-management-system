@@ -21,7 +21,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                   <AuthenticationProvider>
                     <SocketProvider>
                       <MichelangeloProvider>
-                        <MrbMain name="Newton RMS">{children}</MrbMain>
+                        <MrbMain name="Review Management System">
+                          {children}
+                        </MrbMain>
                       </MichelangeloProvider>
                     </SocketProvider>
                   </AuthenticationProvider>

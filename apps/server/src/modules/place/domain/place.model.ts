@@ -1,3 +1,5 @@
+import { Review } from '@server/modules/review/domain'
+import { User } from '@server/modules/user/domain'
 import {
   Column,
   CreateDateColumn,
@@ -5,32 +7,36 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm'
 
-import { User } from '../../../modules/user/domain'
-
 @Entity()
-export class AiPrompt {
+export class Place {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
+  @Column({ nullable: true, unique: true })
+  place_id?: string
+
   @Column({})
-  promptText: string
+  name: string
+
+  @Column({})
+  address: string
 
   @Column({})
   userId: string
 
-  @ManyToOne(() => User, parent => parent.aiPrompts)
+  @ManyToOne(() => User, user => user.place)
   @JoinColumn({ name: 'userId' })
   user?: User
 
+  @OneToMany(() => Review, reviews => reviews.places)
+  reviews?: Review[]
+
   @CreateDateColumn()
   dateCreated: string
-
-  @UpdateDateColumn()
-  dateUpdated: string
 
   @DeleteDateColumn()
   dateDeleted: string

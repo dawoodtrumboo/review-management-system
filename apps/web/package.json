@@ -42,7 +42,9 @@
     "socket.io-client": "^4.7.4",
     "styled-components": "^6.0.7",
     "utf-8-validate": "^5.0.10",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "@reach/combobox": "^0.16.5",
+    "use-places-autocomplete": "^1.11.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.4",

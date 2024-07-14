@@ -178,7 +178,7 @@ function AuthenticationGuard({
   return (
     <>
       {isLoading || !isRedirected ? (
-        <MrbSplashScreen name="Newton RMS" />
+        <MrbSplashScreen name="Review Management System" />
       ) : (
         children
       )}

@@ -3,9 +3,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
@@ -14,6 +13,7 @@ import { Notification } from '../../../modules/notification/domain'
 
 import { BusinessAccount } from '../../../modules/businessAccount/domain'
 
+import { Place } from '@server/modules/place/domain'
 import { AiPrompt } from '../../../modules/aiPrompt/domain'
 
 export enum UserStatus {
@@ -61,4 +61,9 @@ export class User {
 
   @DeleteDateColumn()
   dateDeleted: string
+
+  // Temp relations
+
+  @OneToOne(() => Place, place => place.user)
+  place?: Place
 }

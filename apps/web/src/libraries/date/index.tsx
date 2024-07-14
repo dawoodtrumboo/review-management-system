@@ -23,17 +23,17 @@ export namespace DateLibrary {
     }
 
     const dateHuman = date.toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'short',
       day: 'numeric',
+      month: 'short',
+      year: 'numeric',
     })
 
-    const timeHuman = date.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
+    // const timeHuman = date.toLocaleTimeString([], {
+    //   hour: '2-digit',
+    //   minute: '2-digit',
+    // })
 
-    return `${dateHuman}, ${timeHuman}`
+    return `${dateHuman}`
   }
 
   export function timeAgo(dateString: string): string {

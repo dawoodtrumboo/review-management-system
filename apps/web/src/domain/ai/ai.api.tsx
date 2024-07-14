@@ -12,9 +12,9 @@ import { HttpService } from '../../core/http'
  * @import import { Api } from '@web/domain'
  */
 export class AiApi {
-  static chat(prompt: string): Promise<string> {
+  static chat(prompt: string, userId: string): Promise<string> {
     return HttpService.api
-      .post<any>(`/v1/ai/chat`, { prompt })
+      .post<any>(`/v1/ai/chat`, { prompt, userId })
       .then(({ answer }) => answer)
   }
 

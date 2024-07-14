@@ -1,4 +1,3 @@
-import { ColumnNumeric } from '@server/core/database'
 import {
   Column,
   CreateDateColumn,

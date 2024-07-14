@@ -1,0 +1,27 @@
+.places-container {
+  width: 60%;
+  border-radius: 10px;
+  border: 1px solid #929292;
+  padding-inline: 1rem;
+  padding-block: 0.2rem;
+  color: #929292;
+}
+
+.places-container input {
+  background-color: transparent;
+  color: #929292;
+  border: none;
+}
+.places-container input:focus {
+  outline: none;
+}
+
+.map-container {
+  width: 500px;
+  height: 400px;
+}
+
+.combobox-input {
+  width: 100%;
+  padding: 0.5rem;
+}

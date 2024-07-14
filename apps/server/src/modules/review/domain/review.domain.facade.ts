@@ -69,6 +69,36 @@ export class ReviewDomainFacade {
     return item
   }
 
+  // Temporary
+  async findManyByPlaceIdOrFail(
+    place_id: string,
+    queryOptions: RequestHelper.QueryOptions<Review> = {},
+  ): Promise<Review[]> {
+    if (!place_id) {
+      this.databaseHelper.invalidQueryWhere('place_id')
+    }
+
+    const queryOptionsEnsured = {
+      includes: queryOptions?.includes,
+      filters: {
+        place_id: place_id,
+      },
+    }
+
+    const query = this.databaseHelper.applyQueryOptions(
+      this.repository,
+      queryOptionsEnsured,
+    )
+
+    const item = await query.getMany()
+
+    if (!item) {
+      this.databaseHelper.notFoundByQuery(queryOptionsEnsured.filters)
+    }
+
+    return item
+  }
+
   async findManyByLocation(
     item: Location,
     queryOptions: RequestHelper.QueryOptions<Review> = {},

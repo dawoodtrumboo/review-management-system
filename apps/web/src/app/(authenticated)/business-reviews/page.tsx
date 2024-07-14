@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  CheckCircleOutlined,
   CheckOutlined,
   CopyFilled,
   EditOutlined,
@@ -9,7 +10,6 @@ import {
 } from '@ant-design/icons'
 import { Api, Model } from '@web/domain'
 import { AuthenticationHook } from '@web/domain/authentication'
-import { Review } from '@web/domain/places'
 import { PageLayout } from '@web/layouts/Page.layout'
 import { useAuthentication } from '@web/modules/authentication'
 import {
@@ -25,6 +25,7 @@ import {
   Select,
   Space,
   Spin,
+  Tag,
   Tooltip,
   Typography,
 } from 'antd'
@@ -53,7 +54,13 @@ export default function TestPage() {
   const [selectedLocation, setSelectedLocation] = useState<string | undefined>(
     undefined,
   )
-  const [reviews, setReviews] = useState<Review[]>([])
+  const [reviews, setReviews] = useState<{
+    name: string
+    rating: number
+    user_ratings_total: number
+    reviews: Model.Review[]
+  }>(null)
+
   const [placeDetails, setPlaceDetails] = useState<{
     name: string
     rating: number
@@ -96,51 +103,29 @@ export default function TestPage() {
   ]
 
   const [searchTerm, setSearchTerm] = useState(null)
-  const [places, setPlaces] = useState([])
+  const [places, setPlaces] = useState<Model.Place[]>([])
   const [placeId, setPlaceId] = useState(null)
   const timeoutRef = useRef(null)
-
-  useEffect(() => {
-    return () => clearTimeout(timeoutRef.current)
-  }, [])
-
-  // Logic to search places in the search
-  const handleChange = value => {
-    setSearchTerm(value)
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
-
-    timeoutRef.current = setTimeout(async () => {
-      if (!value) return
-
-      setLoading(true)
-      Api.Place.findPlaces(value)
-        .then(data => {
-          setPlaces(data.results)
-        })
-        .catch(() =>
-          enqueueSnackbar('Failed to fetch places', { variant: 'error' }),
-        )
-        .finally(() => setLoading(false))
-      // const response = await axios.get(
-      //   `http://localhost:3099/api/v1/places?query=${value}`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   },
-      // )
-      // console.log(response.data.result)
-      // setPlaces(response.data.results)
-    }, 500)
-  }
 
   // This function saves the place_id of the place
   const onSelect = value => {
     setPlaceId(value)
   }
+
+  // Fetch Places on Component Render
+
+  useEffect(() => {
+    if (userId) {
+      setLoading(true)
+
+      Api.Place.findByUserId(userId)
+        .then(places => setPlaces(places))
+        .catch(() =>
+          enqueueSnackbar('Failed to fetch places', { variant: 'error' }),
+        )
+        .finally(() => setLoading(false))
+    }
+  }, [])
 
   useEffect(() => {
     if (userId) {
@@ -165,50 +150,39 @@ export default function TestPage() {
     }
   }, [selectedBusinessAccount, businessAccounts])
 
-  const fetchPlaceReviews = async () => {
+  const fetchReviews = async () => {
     setLoading(true)
-
-    const body = {
-      place_id: placeId,
-      fields: 'name,rating,reviews,user_ratings_total',
-      rating: selectedRating,
-      startDate: dateRange[0].toISOString(),
-      endDate: dateRange[1].toISOString(),
-    }
-    Api.Place.reviewsByPlace(body)
-      .then(data => {
-        setReviews(data.reviews)
-        setPlaceDetails({
-          name: data.name,
-          rating: data.rating,
-          user_ratings_total: data.user_ratings_total,
-        })
-      })
-      .catch(() =>
+    Api.Review.findManyByPlaceId(placeId, {
+      includes: ['name', `rating`, `reviews`, , 'user_ratings_total'],
+      filters: {
+        startDate: dateRange[0].toISOString(),
+        endDate: dateRange[1].toISOString(),
+      },
+    })
+      .then(reviewDetails =>
+        // setReviews({
+        //   ...reviewDetails,
+        //   reviews: reviewDetails.reviews.map(review => ({
+        //     ...review,
+        //     reviewText: review.text,
+        //     reviewDate: new Date(review.time * 1000).toISOString(),
+        //     status: 'active',
+        //     place_id: placeId,
+        //   })),
+        // }),
+        setReviews(reviewDetails),
+      )
+      .catch(error =>
         enqueueSnackbar('Failed to fetch reviews', { variant: 'error' }),
       )
       .finally(() => setLoading(false))
-
-    // try {
-    //   const reviews = await axios.get(
-    //     'http://localhost:3099/api/v1/placeReviews',
-    //     { params, headers: { Authorization: `Bearer ${token}` } },
-    //   )
-    //   if (reviews.data) {
-    //     setReviews(reviews.data.reviews)
-    //   }
-    // } catch (error) {
-    //   console.error(error)
-    // } finally {
-    //   setLoading(false)
-    // }
   }
 
-  const generateAiReply = async (reviewId: string, reviewText: string) => {
+  const generateAiReply = async (authorName: string, reviewText: string) => {
     try {
       const prompt = `Generate a reply for the following review: "${reviewText}"`
-      const reply = await Api.Ai.chat(prompt)
-      setAiReplies(prev => ({ ...prev, [reviewId]: reply }))
+      const reply = await Api.Ai.chat(prompt, userId)
+      setAiReplies(prev => ({ ...prev, [authorName]: reply }))
       enqueueSnackbar('AI reply generated', { variant: 'success' })
     } catch {
       enqueueSnackbar('Failed to generate AI reply', { variant: 'error' })
@@ -231,6 +205,60 @@ export default function TestPage() {
     }
   }
 
+  const saveReply = async (review: Model.Review, replyText: string) => {
+    setLoading(true)
+    if (!review.id) {
+      Api.Review.createOne(review)
+        .then(createdReview => {
+          setReviews(prevReviews => {
+            const updatedReviews = { ...prevReviews }
+            updatedReviews.reviews = updatedReviews.reviews.map(item =>
+              item.author_name === createdReview.author_name
+                ? { ...item, id: createdReview.id }
+                : item,
+            )
+            return updatedReviews
+          })
+
+          if (!replyText) return
+
+          Api.Reply.createOneByReviewId(createdReview.id, {
+            replyText,
+            publishedDate: new Date().toISOString(),
+            isAiGenerated: true,
+          })
+            .then(reply => {
+              setAiReplies(prev => ({
+                ...prev,
+                [createdReview.author_name]: reply.replyText,
+              }))
+            })
+            .catch(error =>
+              enqueueSnackbar('Failed to create Reply', { variant: 'error' }),
+            )
+        })
+        .catch(error =>
+          enqueueSnackbar('Failed to created Review', { variant: 'error' }),
+        )
+        .finally(() => setLoading(false))
+    } else {
+      Api.Reply.createOneByReviewId(review.id, {
+        replyText,
+        publishedDate: new Date().toISOString(),
+        isAiGenerated: true,
+      })
+        .then(reply => {
+          setAiReplies(prev => ({
+            ...prev,
+            [review.author_name]: reply.replyText,
+          }))
+        })
+        .catch(error =>
+          enqueueSnackbar('Failed to create Reply', { variant: 'error' }),
+        )
+    }
+  }
+
   useEffect(() => {
     console.log(dateRange)
   }, [dateRange])
@@ -249,6 +277,9 @@ export default function TestPage() {
   }
 
   const [selectedRating, setSelectedRating] = useState(null)
+
+  // Format the date with correct options
+
   return (
     <PageLayout layout="narrow">
       <Title>Reviews</Title>
@@ -258,19 +289,15 @@ export default function TestPage() {
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <Select
+            placeholder="Select Business Account"
             style={{ width: '100%' }}
-            showSearch
-            value={searchTerm}
-            placeholder="Search a place"
-            filterOption={false} // Disable default filtering
-            onSelect={onSelect}
-            onSearch={handleChange}
-            options={places?.map(place => ({
-              value: place.place_id,
-              label: place.name,
-            }))}
+            onChange={setPlaceId}
           >
-            <Input.Search style={{ width: '100%' }} />
+            {places?.map(place => (
+              <Option key={place.id} value={place.place_id}>
+                {place.name}
+              </Option>
+            ))}
           </Select>
         </Col>
         {/* <Col span={24}>
@@ -296,7 +323,7 @@ export default function TestPage() {
         <Col span={24}>
           <Button
             type="primary"
-            onClick={fetchPlaceReviews}
+            onClick={fetchReviews}
             disabled={!placeId || !dateRange || loading}
           >
             Fetch Reviews
@@ -307,21 +334,21 @@ export default function TestPage() {
         <Spin style={{ display: 'block', margin: '20px auto' }} />
       ) : (
         <Flex vertical className="my-5" gap="1rem">
-          {placeDetails && (
+          {reviews && (
             <Flex vertical>
-              <Title className="m-0">{placeDetails?.name}</Title>
+              <Title className="m-0">{reviews?.name}</Title>
               <Space>
-                <Title style={{ margin: '0' }}>{placeDetails.rating}</Title>
+                <Title style={{ margin: '0' }}>{reviews.rating}</Title>
                 <Rate
                   style={{ margin: '0' }}
                   className="m-0 mb-0"
-                  defaultValue={4.5}
+                  defaultValue={reviews.rating}
                   allowHalf
                   disabled
                   count={5}
                 />
                 <Paragraph style={{ marginBottom: '0' }}>
-                  {placeDetails.user_ratings_total} reviews
+                  {reviews.user_ratings_total} reviews
                 </Paragraph>
               </Space>
             </Flex>
@@ -329,7 +356,7 @@ export default function TestPage() {
 
           <List
             itemLayout="vertical"
-            dataSource={reviews}
+            dataSource={reviews?.reviews}
             renderItem={(review, i) => {
               const [ellipsis, setellipsis] = useState(true)
               return (
@@ -343,12 +370,44 @@ export default function TestPage() {
                       <Space size={10} align="start">
                         <Avatar size="large" icon={<UserOutlined />} />
                         <Flex vertical gap="10px">
-                          <Title
-                            level={4}
-                            style={{ margin: '0', textTransform: 'capitalize' }}
-                          >
-                            {review.author_name}
-                          </Title>
+                          <Space direction="vertical" style={{ gap: '0' }}>
+                            <Space>
+                              <Title
+                                level={4}
+                                style={{
+                                  margin: '0',
+                                  textTransform: 'capitalize',
+                                }}
+                              >
+                                {review.author_name}
+                              </Title>
+                              {review.status && (
+                                <Tag
+                                  icon={<CheckCircleOutlined />}
+                                  color="success"
+                                >
+                                  Reply Generated
+                                </Tag>
+                              )}
+                            </Space>
+
+                            <Space style={{ gap: '10px' }}>
+                              <Rate
+                                style={{ margin: '0', fontSize: '14px' }}
+                                className="m-0 mb-0"
+                                defaultValue={review.rating}
+                                allowHalf
+                                disabled
+                                count={5}
+                              />
+                              <Paragraph
+                                style={{ margin: '0', fontSize: '12px' }}
+                              >
+                                {dayjs(review.reviewDate).format('DD/MM/YYYY')}
+                              </Paragraph>
+                            </Space>
+                          </Space>
+
                           <Paragraph
                             ellipsis={
                               ellipsis
@@ -357,31 +416,34 @@ export default function TestPage() {
                             }
                             style={{ margin: '0' }}
                           >
-                            {review.text}
+                            {review.reviewText}
                           </Paragraph>
                           <Col
                             span={24}
                             style={{ position: 'relative', padding: '0' }}
                           >
-                            <Input.TextArea
-                              value={aiReplies[review.id] || ''}
-                              onChange={e =>
-                                setAiReplies(prev => ({
-                                  ...prev,
-                                  [review.id]: e.target.value,
-                                }))
-                              }
-                              style={{
-                                backgroundColor: 'transparent',
-                                border: 'none',
-                                borderLeft: '3px solid #393939',
-                                borderRadius: '0',
-                                resize: 'none',
-                              }}
-                              disabled={!editingReply[review.id]}
-                              rows={4}
-                            />
-                            {aiReplies[review.id] && (
+                            {aiReplies[review.author_name] && (
+                              <Input.TextArea
+                                value={aiReplies[review.author_name] || ''}
+                                onChange={e =>
+                                  setAiReplies(prev => ({
+                                    ...prev,
+                                    [review.author_name]: e.target.value,
+                                  }))
+                                }
+                                style={{
+                                  backgroundColor: 'transparent',
+                                  border: 'none',
+                                  borderLeft: '3px solid #393939',
+                                  borderRadius: '0',
+                                  resize: 'none',
+                                }}
+                                disabled={!editingReply[review.id]}
+                                rows={4}
+                              />
+                            )}
+
+                            {aiReplies[review.author_name] && (
                               <Tooltip title="copy">
                                 <CopyFilled
                                   style={{
@@ -416,9 +478,15 @@ export default function TestPage() {
                               type="primary"
                               icon={<SendOutlined />}
                               onClick={() =>
-                                generateAiReply(review.id, review.text)
+                                generateAiReply(
+                                  review.author_name,
+                                  review.reviewText,
+                                )
                               }
-                              disabled={editingReply[review.id]}
+                              disabled={
+                                editingReply[review.id] ||
+                                review.status?.includes('Generated')
+                              }
                             >
                               Generate AI Reply
                             </Button>
@@ -426,11 +494,23 @@ export default function TestPage() {
                               <Button
                                 type="primary"
                                 icon={<CheckOutlined />}
-                                onClick={() => publishReply(review.id)}
-                                // disabled={!aiReplies[review.id]}
-                                disabled={true}
+                                // onClick={() => publishReply(review.id)}
+                                onClick={() =>
+                                  saveReply(
+                                    {
+                                      ...review,
+                                      place_id: placeId,
+                                      status: 'active',
+                                    },
+                                    aiReplies[review.author_name],
+                                  )
+                                }
+                                disabled={
+                                  !aiReplies[review.author_name] ||
+                                  review.status
+                                }
                               >
-                                Publish Reply
+                                Save Reply
                               </Button>
                             </Tooltip>
                           </Col>

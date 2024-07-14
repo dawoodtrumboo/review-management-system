@@ -3,8 +3,8 @@ import { Request } from 'express'
 import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common'
 import { RequestHelper } from '@server/helpers/request'
 import { EventService } from '@server/libraries/event'
-import { ReplyDomainFacade } from '@server/modules/reply/domain'
 import { AuthenticationDomainFacade } from '@server/modules/authentication/domain'
+import { ReplyDomainFacade } from '@server/modules/reply/domain'
 import { ReplyApplicationEvent } from './reply.application.event'
 import { ReplyCreateDto } from './reply.dto'
 
@@ -48,6 +48,12 @@ export class ReplyByReviewController {
     const valuesUpdated = { ...body, reviewId }
 
     const item = await this.replyDomainFacade.create(valuesUpdated)
+
+    const review = await this.reviewDomainFacade.findOneByIdOrFail(reviewId)
+    await this.reviewDomainFacade.update(review, {
+      replyId: item.id,
+      status: item.isAiGenerated ? 'AI Generated' : 'User Generated',
+    })
 
     await this.eventService.emit<ReplyApplicationEvent.ReplyCreated.Payload>(
       ReplyApplicationEvent.ReplyCreated.key,

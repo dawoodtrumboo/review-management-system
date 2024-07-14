@@ -48,6 +48,7 @@ $ pnpm run start
 ```
 
 ## Important Commands
+
 ```bash
 npm install -g pnpm@latest
 
@@ -73,4 +74,5 @@ npm install notistack
 
 npm install @types/notistack
 ```
-# newton-rms
+
+# Review Management System
